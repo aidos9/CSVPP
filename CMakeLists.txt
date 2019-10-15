@@ -1,4 +1,6 @@
 option(ENABLE_TESTS "Compile tests" ON)
+option(BUILD_STATIC "Build static version of library" ON)
+option(BUILD_SHARED "Build shared version of library" OFF)
 
 cmake_minimum_required(VERSION 3.12)
 
@@ -10,13 +12,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CSV_SOURCES src/csvDocument.cpp
 	src/csvException.cpp
 	src/csvStringDocument.cpp
-  src/csvRow.cpp
-  src/csvStreamDocument.cpp)
+        src/csvRow.cpp
+        src/csvStreamDocument.cpp)
 
 set(CSV_HEADERS include/csvDocument.h
 	include/csvRow.h
 	include/csvException.h
-  include/csvStringDocument.h
+        include/csvStringDocument.h
 	include/csvStreamDocument.h
 	include/csv.h)
 
@@ -60,16 +62,20 @@ if(NOT HAS_STDEXCEPT)
     message(FATAL_ERROR "Could not find #include <stdexcept>")
 endif(NOT HAS_STDEXCEPT)
 
-add_library(${PROJECT_NAME} STATIC ${CSV_SOURCES} ${CSV_HEADERS})
-add_library(${PROJECT_NAME}Shared SHARED ${CSV_SOURCES} ${CSV_HEADERS})
+if(BUILD_STATIC OR ENABLE_TESTS)
+    add_library(${PROJECT_NAME} STATIC ${CSV_SOURCES} ${CSV_HEADERS})
+    set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${CSV_HEADERS}")
+endif(BUILD_STATIC OR ENABLE_TESTS)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${CSV_HEADERS}")
-set_target_properties(${PROJECT_NAME}Shared PROPERTIES PUBLIC_HEADER "${CSV_HEADERS}")
+if(BUILD_SHARED)
+    add_library(${PROJECT_NAME}Shared SHARED ${CSV_SOURCES} ${CSV_HEADERS})
+    set_target_properties(${PROJECT_NAME}Shared PROPERTIES PUBLIC_HEADER "${CSV_HEADERS}")
+endif(BUILD_SHARED)
 
 if(ENABLE_TESTS)
-		if(NOT HAS_IOSTREAM)
-	  	message(FATAL_ERROR "Could not find #include <iostream>")
-		endif(NOT HAS_IOSTREAM)
+    if(NOT HAS_IOSTREAM)
+        message(FATAL_ERROR "Could not find #include <iostream>")
+    endif(NOT HAS_IOSTREAM)
 
     include(CTest)
     add_subdirectory(tests)
