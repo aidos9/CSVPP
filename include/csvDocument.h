@@ -32,6 +32,8 @@ protected:
     std::string read_line(std::istream& stream);
     CSVRow parse_row(const std::string& line);
     bool contains_not_whitespace(const std::string& str) const;
+    bool contains_whitespace(const std::string& str) const;
+    std::string serialize_row(const CSVRow& row) const;
 
     CSVRow header;
     std::vector<CSVRow> rows_contents;

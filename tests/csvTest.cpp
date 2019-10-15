@@ -103,3 +103,10 @@ TEST_CASE("[CSV-File]") {
         }
     }
 }
+
+TEST_CASE("[CSV-Serialize]") {
+    CSV::CSVStringDocument parser = CSV::CSVStringDocument("name,job,location\nbob,mechanic,australia\njames,\"tech \"\"in\"\" industry\",america\n");
+    parser.parse();
+
+    REQUIRE(parser.to_string() == "name,job,location\nbob,mechanic,australia\njames,\"tech \"\"in\"\" industry\",america\n");
+}

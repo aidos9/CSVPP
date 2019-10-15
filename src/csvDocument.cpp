@@ -1,6 +1,7 @@
 #include "../include/csvDocument.h"
 #include "../include/csvException.h"
 #include <vector>
+#include <iostream>
 
 namespace CSV {
 
@@ -77,6 +78,11 @@ std::string CSVDocument::read_line(std::istream& stream)
 bool CSVDocument::contains_not_whitespace(const std::string& str) const
 {
     return str.find_first_not_of(" \t\n\v\f\r\0") != std::string::npos;
+}
+
+bool CSVDocument::contains_whitespace(const std::string& str) const
+{
+    return str.find_first_of(" \t\n\v\f\r\0") != std::string::npos;
 }
 
 CSVRow CSVDocument::parse_row(const std::string& line)
@@ -182,17 +188,57 @@ bool CSVDocument::has_header_key(const std::string& key) const
     return header.has_item(key);
 }
 
-std::string serialize_row(const CSVRow& row)
+std::string CSVDocument::serialize_row(const CSVRow& row) const
 {
     std::string result = "";
     size_t i = 0;
 
     for(i = 0; i < row.count()-1; i++)
     {
-        result += row.at(i)+",";
+        std::string item = row.at(i);
+
+        if(item.find('"') != std::string::npos)
+        {
+            for(size_t c = 0; c < item.size(); c++)
+            {
+                if(item[c] == '"')
+                {
+                    item.insert(c, "\"");
+                    c++;
+                }
+            }
+        }
+
+        if(contains_whitespace(item))
+        {
+            item.insert(0, "\"");
+            item.insert(item.size(), "\"");
+        }
+
+        result += item+",";
     }
 
-    result += row.at(i);
+    std::string item = row.at(i);
+
+    if(item.find('"') != std::string::npos)
+    {
+        for(size_t c = 0; c < item.size(); c++)
+        {
+            if(item[c] == '"')
+            {
+                item.insert(c, "\"");
+                c++;
+            }
+        }
+    }
+
+    if(contains_whitespace(item))
+    {
+        item.insert(0, "\"");
+        item.insert(item.size(), "\"");
+    }
+
+    result += item;
     result += "\n";
 
     return result;
@@ -200,7 +246,7 @@ std::string serialize_row(const CSVRow& row)
 
 std::string CSVDocument::to_string() const
 {
-    std::string output = "";
+    std::string output = serialize_row(header);
 
     for(size_t r = 0; r < rows(); r++)
     {
