@@ -181,4 +181,40 @@ bool CSVDocument::has_header_key(const std::string& key) const
 {
     return header.has_item(key);
 }
+
+std::string serialize_row(const CSVRow& row)
+{
+    std::string result = "";
+    size_t i = 0;
+
+    for(i = 0; i < row.count()-1; i++)
+    {
+        result += row.at(i)+",";
+    }
+
+    result += row.at(i);
+    result += "\n";
+
+    return result;
+}
+
+std::string CSVDocument::to_string() const
+{
+    std::string output = "";
+
+    for(size_t r = 0; r < rows(); r++)
+    {
+        output += serialize_row(row_at_index(r));
+    }
+
+    return output;
+}
+
+void CSVDocument::write_stream(std::ostream& stream) const
+{
+    for(size_t r = 0; r < rows(); r++)
+    {
+        stream << serialize_row(row_at_index(r));
+    }
+}
 }

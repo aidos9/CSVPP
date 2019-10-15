@@ -5,6 +5,7 @@
 #include <string>
 #include <istream>
 #include <sstream>
+#include <ostream>
 
 namespace CSV {
 class CSVDocument
@@ -23,6 +24,9 @@ public:
     CSVRow get_header() const;
 
     bool has_header_key(const std::string& key) const;
+
+    std::string to_string() const;
+    void write_stream(std::ostream& stream) const;
 
 protected:
     std::string read_line(std::istream& stream);
