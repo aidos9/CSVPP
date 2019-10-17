@@ -17,6 +17,9 @@ public:
     size_t rows() const;
     size_t columns() const;
 
+    void append_row(const CSVRow& row);
+    void remove_row(const size_t& row_index);
+
     std::string cell_contents(const size_t& row_index, const size_t& cell_index) const;
     std::string cell_contents(const size_t& row_index, const std::string& header_id) const;
 

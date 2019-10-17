@@ -263,4 +263,18 @@ void CSVDocument::write_stream(std::ostream& stream) const
         stream << serialize_row(row_at_index(r));
     }
 }
+
+void CSVDocument::append_row(const CSVRow& row)
+{
+    rows_contents.push_back(row);
+}
+
+void CSVDocument::remove_row(const size_t& row_index)
+{
+    if(row_index < rows())
+    {
+        rows_contents.erase(rows_contents.begin() + row_index);
+    }
+}
+
 }

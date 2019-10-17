@@ -4,6 +4,11 @@
 #include <sstream>
 
 namespace CSV{
+CSVStringDocument::CSVStringDocument() : string()
+{
+
+}
+
 CSVStringDocument::CSVStringDocument(const std::string& csv_string) : string(csv_string)
 {
 
