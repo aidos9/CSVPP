@@ -25,6 +25,7 @@ public:
 
     CSVRow row_at_index(const size_t& row_index) const;
     CSVRow get_header() const;
+    void set_header(const CSVRow& row); // Clears all the rows!
 
     bool has_header_key(const std::string& key) const;
 

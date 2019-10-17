@@ -146,6 +146,12 @@ CSVRow CSVDocument::get_header() const
     return header;
 }
 
+void CSVDocument::set_header(const CSVRow& row)
+{
+    header = row;
+    rows_contents.clear();
+}
+
 std::string CSVDocument::cell_contents(const size_t& row_index, const size_t& cell_index) const
 {
     if(row_index >= rows_contents.size())
