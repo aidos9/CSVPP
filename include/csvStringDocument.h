@@ -7,6 +7,7 @@ namespace CSV {
 class CSVStringDocument : public CSVDocument
 {
 public:
+    CSVStringDocument();
     CSVStringDocument(const std::string& csv_string);
 
     void parse() override;
